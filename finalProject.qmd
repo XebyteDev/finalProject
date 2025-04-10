@@ -1,0 +1,33 @@
+---
+title: "finalProject"
+---
+
+```{r}
+library(tidyverse)
+library(foreach)
+spotify <- read.csv("Spotify.csv")
+
+
+spotify$Platform.Type <- as.numeric(as.factor(spotify$Platform.Type))-1
+spotify$Artist <- as.factor(spotify$Artist)
+spotify$Solo <-0
+
+solo_artists <- as.array(unique(spotify$Artist))
+solo_artists <- solo_artists[-c(10,13)]
+for(i in 1:nrow(spotify)){
+  if(spotify$Artist[i] %in% solo_artists){
+    spotify$Solo[i] <-1
+  }
+}
+
+```
+
+
+``` {r}
+plot(spotify$Solo,spotify$Monthly.Listeners..Millions.)
+plot(spotify$Solo,spotify$Total.Streams..Millions.)
+plot(spotify$Solo,spotify$Total.Hours.Streamed..Millions.)
+plot(spotify$Solo,spotify$Avg.Stream.Duration..Min.)
+plot(spotify$Solo,spotify$Streams.Last.30.Days..Millions.)
+plot(spotify$Solo,spotify$Skip.Rate....)
+```
