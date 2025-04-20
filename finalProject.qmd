@@ -19,6 +19,7 @@ for(i in 1:nrow(spotify)){
     spotify$Solo[i] <-1
   }
 }
+write_csv(spotify,"Spotify.csv")
 
 ```
 
@@ -29,5 +30,81 @@ plot(spotify$Solo,spotify$Total.Streams..Millions.)
 plot(spotify$Solo,spotify$Total.Hours.Streamed..Millions.)
 plot(spotify$Solo,spotify$Avg.Stream.Duration..Min.)
 plot(spotify$Solo,spotify$Streams.Last.30.Days..Millions.)
-plot(spotify$Solo,spotify$Skip.Rate....)
+result <- cor.test(spotify$Skip.Rate....,spotify$Solo, method = "pearson")
+result
+```
+
+#TODO:Compare normal distributions of solo artists vs group artists
+#Monthly Listeners, Millions Streams, Skip rate, Average Stream Duration
+#
+
+
+```{r}
+boxplot(spotify$Total.Streams..Millions. ~ spotify$Solo,
+        main = "Point-Biserial Relationship",
+        xlab = "Group (Binary Variable)",
+        ylab = "Score (Numeric Variable)",
+        col = c("lightblue", "lightgreen"))
+
+solo_artist<-subset(spotify, spotify$Solo==1)
+group_artist<-subset(spotify, spotify$Solo==0)
+hist(solo_artist$Total.Hours.Streamed..Millions.)
+hist(group_artist$Total.Hours.Streamed..Millions.)
+hist(solo_artist$Monthly.Listeners..Millions.)
+hist(group_artist$Monthly.Listeners..Millions.)
+hist(group_artist$Platform.Type)
+hist(solo_artist$Platform.Type)
+hist(group_artist$Avg.Stream.Duration..Min.)
+hist(solo_artist$Avg.Stream.Duration..Min.)
+mean(group_artist$Skip.Rate....)
+mean(solo_artist$Skip.Rate....)
+
+```
+
+
+```{r}
+# Load necessary library
+library(dplyr)
+library(readr)
+
+# Read the CSV file
+spotify <- read_csv("Spotify.csv")
+
+# Group by Artist and calculate the mean of numeric columns, excluding specific ones
+spotify_grouped <- spotify %>%
+  select(-Genre, -Release.Year, -Country, -Album,) %>%
+  group_by(Artist) %>%
+  summarise(across(where(is.numeric), ~ round(mean(.x, na.rm = TRUE), 3)))
+
+# View the result
+print(spotify_grouped)
+write_csv(spotify_grouped,"Spotify_grouped.csv")
+
+# Optionally, write to a new CSV
+# write_csv(spotify_grouped, "Grouped_Spotify.csv")
+
+```
+```{r}
+boxplot(spotify$Total.Streams..Millions. ~ spotify$Solo,
+        main = "Point-Biserial Relationship",
+        xlab = "Group (Binary Variable)",
+        ylab = "Score (Numeric Variable)",
+        col = c("lightblue", "lightgreen"))
+
+solo_artist<-subset(spotify_grouped, spotify_grouped$Solo==1)
+group_artist<-subset(spotify_grouped, spotify_grouped$Solo==0)
+boxplot(solo_artist$Total.Hours.Streamed..Millions.)
+boxplot(group_artist$Total.Hours.Streamed..Millions.)
+hist(solo_artist$Monthly.Listeners..Millions.)
+hist(group_artist$Monthly.Listeners..Millions.)
+boxplot(group_artist$Platform.Type)
+boxplot(solo_artist$Platform.Type)
+hist(group_artist$Avg.Stream.Duration..Min.)
+hist(solo_artist$Avg.Stream.Duration..Min.)
+mean(solo_artist$Skip.Rate....)
+mean(group_artist$Skip.Rate....)
+mean(spotify$Platform.Type)
+sd(group_artist$Platform.Type)
+
+curve(dnorm(x,.5,sd(group_artist$Platform.Type))
 ```
