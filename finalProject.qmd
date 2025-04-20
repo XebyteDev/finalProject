@@ -105,6 +105,23 @@ mean(solo_artist$Skip.Rate....)
 mean(group_artist$Skip.Rate....)
 mean(spotify$Platform.Type)
 sd(group_artist$Platform.Type)
-
-curve(dnorm(x,.5,sd(group_artist$Platform.Type))
 ```
+
+
+```{r}
+curve(dnorm(x,mean(group_artist$Platform.Type),sd(group_artist$Platform.Type)))
+
+curve(dnorm(x,mean(solo_artist$Platform.Type),sd(solo_artist$Platform.Type)))
+```
+
+
+```{r}
+alpha <- 8460/246
+beta <- 1208/412
+  #rpp (revenue per person)
+  spotify_grouped$avg_rpp<- round(alpha*spotify_grouped$Platform.Type + beta*(1-spotify_grouped$Platform.Type),3)
+  spotify_grouped$engagement_rate <- 100-spotify_grouped$Skip.Rate....
+  write_csv(spotify_grouped,"Spotify_grouped.csv")
+
+```
+
